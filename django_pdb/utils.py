@@ -12,7 +12,9 @@ def get_ipdb():
     try:
         import ipdb
         from ipdb import __main__
-        return ipdb.__main__.Pdb(def_colors)
+        if hasattr(ipdb.__main__, 'Pdb'):
+            return ipdb.__main__.Pdb(def_colors)
+        return ipdb.__main__._init_pdb()
     except ImportError:  # old versions of ipdb
         return ipdb.Pdb(def_colors)
 
@@ -32,7 +34,7 @@ def get_def_colors():
         try:
             get_ipython
         except NameError:
-            from IPython.frontend.terminal.embed import InteractiveShellEmbed
+            from IPython.terminal.embed import InteractiveShellEmbed
             ipshell = InteractiveShellEmbed()
             def_colors = ipshell.colors
         else:
